@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Login | BankSwift{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <div class="logo-mark">BS</div>
+  <h1>Welcome back</h1>
+  <p class="sub">Login to your BankSwift account</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label for="id_username">Username</label>
+      {{ form.username }}
+    </div>
+    <div class="field">
+      <label for="id_password">Password</label>
+      {{ form.password }}
+    </div>
+    {% if form.non_field_errors %}
+      <ul class="errorlist">{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+  <p class="auth-footer">New to BankSwift? <a href="{% url 'register' %}" style="color:var(--kotak-red); font-weight:600;">Create an account</a></p>
+</div>
+{% endblock %}
