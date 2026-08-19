@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Register | BankSwift{% endblock %}
+{% block content %}
+<div class="auth-card" style="max-width:480px;">
+  <div class="logo-mark">BS</div>
+  <h1>Open your account</h1>
+  <p class="sub">Get ₹5,000 demo balance instantly on signup</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label>Username</label>
+      {{ form.username }}
+      {% if form.username.errors %}<ul class="errorlist">{% for e in form.username.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+    <div class="field">
+      <label>Email</label>
+      {{ form.email }}
+    </div>
+    <div class="field">
+      <label>Mobile Number</label>
+      {{ form.phone }}
+    </div>
+    <div class="field">
+      <label>Account Type</label>
+      {{ form.account_type }}
+    </div>
+    <div class="field">
+      <label>Password</label>
+      {{ form.password1 }}
+      {% if form.password1.errors %}<ul class="errorlist">{% for e in form.password1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+    <div class="field">
+      <label>Confirm Password</label>
+      {{ form.password2 }}
+    </div>
+    <button type="submit" class="btn btn-primary">Create Account</button>
+  </form>
+  <p class="auth-footer">Already have an account? <a href="{% url 'login' %}" style="color:var(--kotak-red); font-weight:600;">Login</a></p>
+</div>
+{% endblock %}
