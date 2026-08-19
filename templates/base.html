@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}BankSwift{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  {% if user.is_authenticated %}
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo-mark">BS</span> BankSwift
+    </div>
+    <nav>
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'transfer' %}">Transfer</a>
+      <a href="{% url 'transactions' %}">Transactions</a>
+      <a href="{% url 'profile' %}">Profile</a>
+      <span class="user-chip">👋 {{ user.first_name|default:user.username }}</span>
+      <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+  </header>
+  {% endif %}
+
+  <main class="{% if not user.is_authenticated %}auth-page{% else %}page{% endif %}">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if user.is_authenticated %}
+  <button id="chatbot-toggle" onclick="toggleChat()">💬</button>
+  <div id="chatbot-window">
+    <div class="chatbot-header">
+      <div>BankSwift Assistant<br><small>Ask about balance, transfers & more</small></div>
+      <span style="cursor:pointer" onclick="toggleChat()">✕</span>
+    </div>
+    <div class="chatbot-body" id="chatbot-body">
+      <div class="chat-msg bot">Hi {{ user.first_name|default:user.username }}! I'm your BankSwift Assistant. Ask me about your balance, transfers, or transaction history.</div>
+    </div>
+    <form class="chatbot-input" onsubmit="sendChatMessage(event)">
+      <input type="text" id="chatbot-text" placeholder="Type a message..." autocomplete="off">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <script src="{% static 'js/chatbot.js' %}"></script>
+  {% endif %}
+</body>
+</html>
