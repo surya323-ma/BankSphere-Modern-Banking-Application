@@ -1,4 +1,4 @@
-# BankSwift — Full-Stack Banking Web App
+# BankSphere – Modern Banking Application
 
 A working banking application inspired by the Kotak Mahindra Bank app UI, built with **Django** (backend + server-rendered UI) and **SQLite/PostgreSQL**. Includes real money-transfer logic, transaction history, dashboard, and a rule-based chatbot assistant. Ready to deploy on **Render**.
 
