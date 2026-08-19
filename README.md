@@ -58,7 +58,7 @@ BankSwift/
    python manage.py runserver
    ```
 
-5. Open **http://127.0.0.1:8000/accounts/register/** and create an account. Register a second account in an incognito window to test transfers between two users.
+5. Open **https://banksphere-modern-banking-application.onrender.com** and create an account. Register a second account in an incognito window to test transfers between two users.
 
 ## Deploy on Render
 
