@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Transfer Money | BankSwift{% endblock %}
+{% block content %}
+<div class="grid">
+  <div class="card">
+    <h2>Transfer Money</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label>{{ form.recipient.label }}</label>
+        {{ form.recipient }}
+        {% if form.recipient.errors %}<ul class="errorlist">{% for e in form.recipient.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="field">
+        <label>{{ form.amount.label }}</label>
+        {{ form.amount }}
+        {% if form.amount.errors %}<ul class="errorlist">{% for e in form.amount.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="field">
+        <label>{{ form.note.label }}</label>
+        {{ form.note }}
+      </div>
+      <button type="submit" class="btn btn-primary">Send Money</button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Your Balance</h2>
+    <p style="font-size:1.6rem; font-weight:800; color:var(--kotak-maroon);">₹{{ profile.balance|floatformat:2 }}</p>
+    <p style="font-size:.85rem; color:var(--text-muted);">Account: {{ profile.masked_account_number }}</p>
+    <p style="font-size:.82rem; color:var(--text-muted); margin-top:16px;">Transfers between BankSwift accounts are instant and free. Enter the recipient's 14-digit account number or their username.</p>
+  </div>
+</div>
+{% endblock %}
