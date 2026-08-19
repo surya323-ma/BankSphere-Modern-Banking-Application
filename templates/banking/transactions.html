@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Transactions | BankSwift{% endblock %}
+{% block content %}
+<div class="filter-tabs">
+  <a href="{% url 'transactions' %}" class="{% if txn_type == 'all' %}active{% endif %}">All</a>
+  <a href="{% url 'transactions' %}?type=sent" class="{% if txn_type == 'sent' %}active{% endif %}">Sent</a>
+  <a href="{% url 'transactions' %}?type=received" class="{% if txn_type == 'received' %}active{% endif %}">Received</a>
+</div>
+
+<div class="card">
+  <h2>Transaction History</h2>
+  {% if page_obj %}
+    {% for txn in page_obj %}
+      {% if txn.receiver_id == profile.id %}
+        <a href="{% url 'transaction_detail' txn.txn_id %}">
+        <div class="txn-row">
+          <div class="txn-left">
+            <div class="txn-avatar">{{ txn.sender.user.username|default:"?"|first|upper }}</div>
+            <div>
+              <div class="txn-name">From {{ txn.sender.user.username|default:"Self Deposit" }}</div>
+              <div class="txn-date">{{ txn.timestamp|date:"d M Y, h:i A" }} &middot; {{ txn.txn_id }}</div>
+              {% if txn.note %}<div class="txn-note">{{ txn.note }}</div>{% endif %}
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="txn-amt credit">+₹{{ txn.amount|floatformat:2 }}</div>
+            <span class="badge {{ txn.status }}">{{ txn.get_status_display }}</span>
+          </div>
+        </div>
+        </a>
+      {% else %}
+        <a href="{% url 'transaction_detail' txn.txn_id %}">
+        <div class="txn-row">
+          <div class="txn-left">
+            <div class="txn-avatar">{{ txn.receiver.user.username|first|upper }}</div>
+            <div>
+              <div class="txn-name">To {{ txn.receiver.user.username }}</div>
+              <div class="txn-date">{{ txn.timestamp|date:"d M Y, h:i A" }} &middot; {{ txn.txn_id }}</div>
+              {% if txn.note %}<div class="txn-note">{{ txn.note }}</div>{% endif %}
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="txn-amt debit">-₹{{ txn.amount|floatformat:2 }}</div>
+            <span class="badge {{ txn.status }}">{{ txn.get_status_display }}</span>
+          </div>
+        </div>
+        </a>
+      {% endif %}
+    {% endfor %}
+
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if txn_type != 'all' %}&type={{ txn_type }}{% endif %}">Prev</a>
+      {% endif %}
+      <span class="current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if txn_type != 'all' %}&type={{ txn_type }}{% endif %}">Next</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="empty-state">No transactions found.</div>
+  {% endif %}
+</div>
+{% endblock %}

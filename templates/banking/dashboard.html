@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | BankSwift{% endblock %}
+{% block content %}
+<div class="grid">
+  <div>
+    <div class="balance-card">
+      <div class="label">Available Balance</div>
+      <div class="amount">₹{{ profile.balance|floatformat:2 }}</div>
+      <div class="meta">
+        <div><span>Account No.</span><strong>{{ profile.masked_account_number }}</strong></div>
+        <div><span>IFSC</span><strong>{{ profile.ifsc }}</strong></div>
+        <div><span>Type</span><strong>{{ profile.get_account_type_display }}</strong></div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <a href="{% url 'transfer' %}"><span class="icon">💸</span>Transfer</a>
+      <a href="{% url 'transactions' %}"><span class="icon">🧾</span>History</a>
+      <a href="{% url 'profile' %}"><span class="icon">👤</span>Profile</a>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>Recent Transactions <a href="{% url 'transactions' %}" class="see-all">See all</a></h2>
+      {% if recent_txns %}
+        {% for txn in recent_txns %}
+          {% if txn.receiver_id == profile.id %}
+            <div class="txn-row">
+              <div class="txn-left">
+                <div class="txn-avatar">{{ txn.sender.user.username|default:"?"|first|upper }}</div>
+                <div>
+                  <div class="txn-name">From {{ txn.sender.user.username|default:"Self Deposit" }}</div>
+                  <div class="txn-date">{{ txn.timestamp|date:"d M Y, h:i A" }}</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="txn-amt credit">+₹{{ txn.amount|floatformat:2 }}</div>
+                <span class="badge {{ txn.status }}">{{ txn.get_status_display }}</span>
+              </div>
+            </div>
+          {% else %}
+            <div class="txn-row">
+              <div class="txn-left">
+                <div class="txn-avatar">{{ txn.receiver.user.username|first|upper }}</div>
+                <div>
+                  <div class="txn-name">To {{ txn.receiver.user.username }}</div>
+                  <div class="txn-date">{{ txn.timestamp|date:"d M Y, h:i A" }}</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="txn-amt debit">-₹{{ txn.amount|floatformat:2 }}</div>
+                <span class="badge {{ txn.status }}">{{ txn.get_status_display }}</span>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">No transactions yet. Send your first transfer!</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Quick Summary</h2>
+      <ul class="detail-list">
+        <li><span>Recent money in</span><span style="color:var(--success); font-weight:700;">+₹{{ total_in|floatformat:2 }}</span></li>
+        <li><span>Recent money out</span><span style="color:var(--danger); font-weight:700;">-₹{{ total_out|floatformat:2 }}</span></li>
+        <li><span>UPI ID</span><span>{{ profile.upi_id }}</span></li>
+      </ul>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <h2>Need help?</h2>
+      <p style="font-size:.88rem; color:var(--text-muted);">Use the BankSwift Assistant chat button in the bottom-right corner to ask about your balance, transfers, or account details — anytime.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

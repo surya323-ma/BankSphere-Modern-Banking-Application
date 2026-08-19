@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Transaction Detail | BankSwift{% endblock %}
+{% block content %}
+<div class="card" style="max-width:520px; margin:0 auto;">
+  <h2>Transaction Receipt</h2>
+  <div style="text-align:center; margin-bottom:18px;">
+    {% if txn.status == 'success' %}
+      <div style="font-size:2.4rem;">✅</div>
+      <div style="font-weight:700; color:var(--success);">Transfer Successful</div>
+    {% else %}
+      <div style="font-size:2.4rem;">❌</div>
+      <div style="font-weight:700; color:var(--danger);">Transfer Failed</div>
+    {% endif %}
+    <div style="font-size:1.8rem; font-weight:800; margin-top:8px;">₹{{ txn.amount|floatformat:2 }}</div>
+  </div>
+  <ul class="detail-list">
+    <li><span>Reference ID</span><span>{{ txn.txn_id }}</span></li>
+    <li><span>From</span><span>{{ txn.sender.user.username|default:"Self Deposit" }}</span></li>
+    <li><span>To</span><span>{{ txn.receiver.user.username }}</span></li>
+    <li><span>Date &amp; Time</span><span>{{ txn.timestamp|date:"d M Y, h:i A" }}</span></li>
+    <li><span>Status</span><span class="badge {{ txn.status }}">{{ txn.get_status_display }}</span></li>
+    {% if txn.note %}<li><span>Note</span><span>{{ txn.note }}</span></li>{% endif %}
+  </ul>
+  <a href="{% url 'transactions' %}" class="btn btn-secondary" style="margin-top:18px; display:block;">Back to Transactions</a>
+</div>
+{% endblock %}
