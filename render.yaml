@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: bankswift
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn bankswift.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bankswift-db
+          property: connectionString
+
+databases:
+  - name: bankswift-db
+    plan: free
